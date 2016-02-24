@@ -1,0 +1,9 @@
+var arrRisQuery=new Array()
+a=arrRisQuery
+a[1]=new RisQuery("Giocatore%Squadra%Ruolo%Pres%GFR%RS%Tesserato In")
+a[2]=new RisQuery("SANSONE&nbsp;Nicola&nbsp;Domenico%Sassuolo%A%11%0%1%Frasinone")
+a[3]=new RisQuery("POGBA&nbsp;Paul%Juventus%C%12%1%1%Guarratasarai")
+a[4]=new RisQuery("MATOS&nbsp;Ryder%Carpi%A%12%0%1%HilbertMeFaNaSega")
+a[5]=new RisQuery("LAZZARI&nbsp;Andrea%Carpi%C%4%0%1%")
+a[6]=new RisQuery("PINILLA&nbsp;Mauricio%Atalanta%A%10%0%1%Guarratasarai")
+a[7]=new RisQuery("MORALEZ&nbsp;Maximiliano%Atalanta%C%12%0%1%HilbertMeFaNaSega")

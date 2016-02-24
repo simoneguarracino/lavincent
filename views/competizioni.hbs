@@ -1,0 +1,13 @@
+{{#each competizioni}}
+<h1>{{this.Nome}}</h1>
+<p>{{this.Predefinita}}</p>
+<ul>
+{{#each this.gironi}}
+{{#if this.IDGruppo}}
+<li>{{this.IDGruppo}} {{this.Nome}}</li>
+{{else}}
+<li>{{this.Nome}}</li>
+{{/if}}
+{{/each}}
+</ul>
+{{/each}}

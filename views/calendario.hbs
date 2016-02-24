@@ -1,0 +1,23 @@
+{{#each calendario}}
+<h1>{{this.IDCompetizione}}</h1>
+{{#each this.gironi}}
+{{#each this.giornate}}
+<table>
+<thead>
+	<tr>
+		<th>Giornata {{this.GiornataDiA}}</th>
+		<th>Nome</th>
+	</tr>
+</thead>
+<tbody>
+{{#each this.incontri}}
+	<tr>
+		<td>{{this.Nomi.NomeCasa}}</td>
+		<td>{{this.Nomi.NomeFuori}}</td>
+	</tr>
+{{/each}}
+</tbody>
+</table>
+{{/each}}
+{{/each}}
+{{/each}}

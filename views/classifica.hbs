@@ -1,0 +1,23 @@
+{{#each classifica}}
+<h1>{{this.IDCompetizione}}</h1>
+{{#each this.gironi}}
+<table>
+<thead>
+	<tr>
+		<th>{{this.IDGirone}} Posizione</th>
+		<th>Nome</th>
+		<th>Punti</th>
+	</tr>
+</thead>
+<tbody>
+{{#each this.posizioni}}
+	<tr>
+		<td>{{this.Pos}}</td>
+		<td>{{this.Nome}}</td>
+		<td>{{this.Punti}}</td>
+	</tr>
+{{/each}}
+</tbody>
+</table>
+{{/each}}
+{{/each}}

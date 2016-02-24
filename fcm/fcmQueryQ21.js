@@ -1,0 +1,13 @@
+var arrRisQuery=new Array()
+a=arrRisQuery
+a[1]=new RisQuery("Giocatore%Squadra%Ruolo%Pres%AGol%Tesserato In")
+a[2]=new RisQuery("BASTA&nbsp;Dusan%Lazio%D%12%1%A.C.Ojone")
+a[3]=new RisQuery("ELY&nbsp;Rodrigo%Milan%D%3%1%")
+a[4]=new RisQuery("GONZALEZ&nbsp;Giancarlo%Palermo%D%12%1%Guarratasarai")
+a[5]=new RisQuery("LAMANNA&nbsp;Eugenio%Genoa%P%7%1%A.C.Ojone")
+a[6]=new RisQuery("MANOLAS&nbsp;Kostas%Roma%D%12%1%Deportivo La Placa")
+a[7]=new RisQuery("MARQUEZ&nbsp;Rafael%Verona%D%8%1%")
+a[8]=new RisQuery("MOISANDER&nbsp;Nicklas%Sampdoria%D%6%1%PierBarça")
+a[9]=new RisQuery("PADELLI&nbsp;Daniele%Torino%P%12%1%SquirTeam")
+a[10]=new RisQuery("TACHTSIDIS&nbsp;Panagiotis%Genoa%C%5%1%")
+a[11]=new RisQuery("VITIELLO&nbsp;Roberto%Palermo%D%3%1%")
