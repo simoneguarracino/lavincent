@@ -5,7 +5,7 @@ var mongoose=require('mongoose');
 
 /* GET classifica listing. */
 router.get('/', function(req, res, next) {
-        mongoose.model('Classifica').find({}, function (err, classifica) {
+       classifica.find({}, function (err, clas) {
               if (err) {
                   return console.error(err);
               } else {
@@ -15,12 +15,12 @@ router.get('/', function(req, res, next) {
                     html: function(){
                         res.render('classifica', {
                               title: 'Classifica',
-                              classifica: classifica
+                              classifica: clas
                           });
                     },
                     //JSON response will show all blobs in JSON format
                     json: function(){
-                        res.json(classifica);
+                        res.json(clas);
                     }
                 });
               }     

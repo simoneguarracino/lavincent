@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var classifica=require('../models/competizioni');
+var competizioni=require('../models/competizioni');
 var mongoose=require('mongoose');
 
 /* GET classifica listing. */
 router.get('/', function(req, res, next) {
-        mongoose.model('Competizione').find({}, function (err, competizioni) {
+        competizioni.find({}, function (err, comp) {
               if (err) {
                   return console.error(err);
               } else {
@@ -15,12 +15,12 @@ router.get('/', function(req, res, next) {
                     html: function(){
                         res.render('competizioni', {
                               title: 'Competizioni',
-                              competizioni: competizioni
+                              competizioni: comp
                           });
                     },
                     //JSON response will show all blobs in JSON format
                     json: function(){
-                        res.json(competizioni);
+                        res.json(comp);
                     }
                 });
               }     

@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var classifica=require('../models/calendario');
+var calendario=require('../models/calendario');
 var mongoose=require('mongoose');
 
 /* GET classifica listing. */
 router.get('/', function(req, res, next) {
-        mongoose.model('Calendario').find({}, function (err, calendario) {
+        calendario.find({}, function (err, cal) {
               if (err) {
                   return console.error(err);
               } else {
@@ -15,12 +15,12 @@ router.get('/', function(req, res, next) {
                     html: function(){
                         res.render('calendario', {
                               title: 'Calendario',
-                              calendario: calendario
+                              calendario: cal
                           });
                     },
                     //JSON response will show all blobs in JSON format
                     json: function(){
-                        res.json(calendario);
+                        res.json(cal);
                     }
                 });
               }     
