@@ -1,4 +1,4 @@
-var nomelega="La vincent"
-var stagione=2
-var anno="2015/2016"
-var aggiornamento="18/11/2015 09:37:50"
+var nomelega="Terenzi's League"
+var stagione=7
+var anno="2014/2015"
+var aggiornamento="12/05/2015 11:40:11"

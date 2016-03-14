@@ -12,6 +12,7 @@ var classifica = require('./routes/classifica');
 var calendario = require('./routes/calendario');
 var inizializza = require('./routes/inizializza');
 var competizioni = require('./routes/competizioni');
+var squadre = require('./routes/squadre');
 
 var db = require('./models/db');
 
@@ -44,6 +45,7 @@ app.use('/classifica', classifica);
 app.use('/calendario', calendario);
 app.use('/inizializza', inizializza);
 app.use('/competizioni', competizioni);
+app.use('/squadre', squadre);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
