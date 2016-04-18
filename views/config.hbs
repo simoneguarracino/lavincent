@@ -1,0 +1,32 @@
+<form action="config/caricadati" method="post">
+    <button type="submit" class="btn btn-warning btn-lg">Carica Dati</button>
+</form>
+<form action="config/initsquadre" method="post">
+	<table>{{#users}}
+		<tr>
+			<td>{{local.email}}</td>
+			<td><select name="{{_id}}">
+				{{#each ../squadre}}
+					{{#if_eq ID ../IDsquadra}}
+						<option value="{{ID}}" selected>{{Nome}}</option>
+					{{else}}
+						<option value="{{ID}}">{{Nome}}</option>
+					{{/if_eq}}
+				{{/each}}
+			</select></td></tr>
+	{{/users}}</table>
+    <button type="submit">Associa Squadre</button>
+</form>
+<form action="config/initcompetizioni" method="post">
+	<label>Competizione Principale</label>
+	<select name="competizione">
+		{{#each competizioni}}
+			{{#if_eq ID ../Competizione}}
+			<option value="{{ID}}" selected>{{Nome}}</option>
+			{{else}}
+			<option value="{{ID}}">{{Nome}}</option>
+			{{/if_eq}}
+		{{/each}}
+	</select>
+    <button type="submit">Accetta</button>
+</form>

@@ -3,6 +3,7 @@ var router = express.Router();
 var async =require('async');
 var fs=require('fs');
 var mongoose=require('mongoose');
+
 var myutil=require('../util/myutil');
 var iconv=require('iconv-lite');
 
@@ -15,9 +16,75 @@ var giocatoreA = require('../models/giocatoreA');
 var fantasquadra = require('../models/fantasquadra');
 var formazione = require('../models/formazione');
 var tabellini = require('../models/tabellini');
+var info = require('../models/info');
+var users = require('../models/user');
 
-/* GET inizializza */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res, next){
+	async.parallel({
+		sqd: function(callback){
+			fantasquadra.find({}, function(err, result){
+				if(err)
+					throw err;
+				callback(null, result);
+			})
+		},
+		usr: function(callback){
+			users.find({}, function(err, result){
+				if(err)
+					throw err;
+				callback(null, result);
+			})
+		},
+		cpz: function(callback){
+			competizioni.find({}, function(err, result){
+				if(err)
+					throw err;
+				callback(null, result);
+			})
+		}
+	}, function(err, results){
+		if(err)
+			throw err;
+		res.render('config', {
+			title: 'Pannello di Configurazione',
+			squadre: results.sqd,
+			users: results.usr,
+			competizioni: results.cpz
+		});
+	});
+});
+
+router.post('/initsquadre', function(req,res){
+	var bulk = users.collection.initializeOrderedBulkOp();
+	for(key in req.body){
+		bulk.find( { _id: mongoose.Types.ObjectId(key) } ).updateOne(
+			{
+				 $set: { IDsquadra: req.body[key] } 
+			}
+		);
+	}
+	var bs=bulk.execute(function(){
+		res.redirect('/config');
+	});
+});
+
+router.post('/initcompetizioni', function(req,res){
+	mongoose.model('Info').findOne({}, function(err, doc){
+		if(err)
+			throw err;
+		doc.Competizione=req.body.competizione;
+		console.log(doc);
+		doc.save(function(err){
+			if(err)
+				console.log(err)
+			else
+				req.app.locals.Competizione=doc.Competizione;
+				res.redirect('/config');
+		});
+	});
+});
+
+router.post('/caricadati', function(req, res, next){
 	classifica.collection.remove();
 	calendario.collection.remove();
 	calendarioA.collection.remove();
@@ -27,6 +94,7 @@ router.get('/', function(req, res, next) {
 	fantasquadra.collection.remove();
 	formazione.collection.remove();
 	tabellini.collection.remove();
+	//info.collection.remove();
 
 	async.parallel({
 		serieAData: function(callback){
@@ -108,6 +176,13 @@ router.get('/', function(req, res, next) {
 	    },
 	    classificaData: function(callback){
 	        fs.readFile('fcm/fcmClassificaDati.js',function(err, data){
+	    		if(err)
+	    			throw err;
+	    		callback(null,iconv.decode(data,'latin1'));
+	    	});
+	    },
+	    legaData: function(callback){
+	        fs.readFile('fcm/fcmLegaDati.js',function(err, data){
 	    		if(err)
 	    			throw err;
 	    		callback(null,iconv.decode(data,'latin1'));
@@ -310,6 +385,19 @@ router.get('/', function(req, res, next) {
 			return arr;
 		},arrCompetizioni);
 
+		eval(results.legaData);
+		info={
+			NomeLega: nomelega,
+			Stagione: stagione,
+			Anno: anno,
+			Aggiornamento: aggiornamento
+		};
+		
+		req.app.locals.NomeLega=info.NomeLega;
+		req.app.locals.Stagione=info.Stagione;
+		req.app.locals.Anno=info.Anno;
+		req.app.locals.Aggiornamento=info.Aggiornamento;
+
 		async.parallel([
 				function(callback){
 					mongoose.model('Quotidiano').create(arrQuotidiani, function(err, cl){
@@ -373,11 +461,33 @@ router.get('/', function(req, res, next) {
 							throw err;
 						callback(null)
 					})
+				},
+				function(callback){
+					mongoose.model('Info').findOne({}, function(err, doc){
+						if(err)
+							throw err;
+						doc.NomeLega=info.NomeLega;
+						doc.Stagione=info.Stagione;
+						doc.Anno=info.Anno;
+						doc.Aggiornamento=info.Aggiornamento;
+						doc.save(function(err){
+							if(err)
+								console.log(err)
+							else{
+								req.app.locals.NomeLega=doc.NomeLega;
+						        req.app.locals.Stagione=doc.Stagione;
+						        req.app.locals.Anno=doc.Anno;
+						        req.app.locals.Aggiornamento=doc.Aggiornamento;
+						        callback(null);
+							}
+						});
+					});
 				}
 			], function(err){
 				if(err)
 					throw err
-				res.redirect('../');
+				console.log('fatto');
+				res.redirect('/config');
 			});
 	});
 });

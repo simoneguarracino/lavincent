@@ -2,18 +2,73 @@
 <html>
   <head>
   	<meta charset="UTF-8">
-    <title>{{title}}</title>
+    <title>{{NomeLega}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+	<!-- Trigger/Open The Modal -->
+	{{!-- <button id="myBtn">Open Modal</button>
+
+	<!-- The Modal -->
+	<div id="myModal" class="modal">
+
+	  <!-- Modal content -->
+	  <div class="modal-content">
+	    <div class="modal-header">
+	      <span class="close">×</span>
+	      <h2>Modal Header</h2>
+	    </div>
+	    <div class="modal-body">
+	      <p>Some text in the Modal Body</p>
+	      <p>Some other text...</p>
+	    </div>
+	    <div class="modal-footer">
+	      <h3>Modal Footer</h3>
+	    </div>
+	  </div>
+
+	</div> --}}
+  	<header>
+		<a href="/"><h1>{{NomeLega}}</h1></a>
+		{{#if user}}
+		<p>
+		<strong>id</strong>: {{user._id}} <strong>email</strong>: {{user.local.email}}
+		</p>
+		<p><a href="/logout">Logout</a></p>
+		{{else}}
+		<form action="/login" method="post">
+		    <label>Email</label>
+		    <input type="email" name="email">
+		    <label>Password</label>
+		    <input type="password" name="password">
+		<button type="submit">Login</button>
+		</form>
+		<p>Need an account? <a href="/signup">Signup</a></p>
+		{{/if}}
+	</header>
 	<nav><ul>
 		<li><a href="/classifica">classifica</a></li>
-		<li><a href="/squadre">squadre</a></li>
-		<li><a href="/calendario">calendario</a></li>
-		<li><a href="/documenti">documenti</a></li>
-		<li><a href="/giornale">giornale</a></li>
+		<li><a href="/squadre">Squadre</a></li>
+		<li><a href="/calendario">Calendario e Competizioni</a></li>
+		<li><a href="/documenti">Documenti di Lega</a></li>
+		<li><a href="/rassegnastampa">Rassegna Stampa</a>
+			{{#if user}}<ul>
+				<li> <a href="/rassegnastampa/new">Nuovo articolo</a> </li>
+			</ul>{{/if}}
+		</li>
+		{{#if_eq user.Role 'Admin'}}
+		<li><a href="/config">Pannello di configurazione</a></li>
+		{{/if_eq}}
+		{{#if user.IDsquadra}}
+		<li><a href="/squadre/id/{{user.IDsquadra}}">Gestione Squadra</a>
+			<ul>
+				<li>Invio Formazione</li>
+				<li>Mercato</li>
+			</ul>
+		</li>
+		{{/if}}
 	</ul></nav>
-	<header><h1>{{title}}</h1></header>
     {{{body}}}
+    <!--<script type="text/javascript" src="javascripts/script.js"></script>-->
   </body>
 </html>

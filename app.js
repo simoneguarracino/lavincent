@@ -4,24 +4,39 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var flash = require('connect-flash');
+var session = require('express-session');
 var sass=require('node-sass-middleware');
-
 var routes = require('./routes/index');
+
+//routes
+var configroute = require('./routes/config');
 var users = require('./routes/users');
 var classifica = require('./routes/classifica');
 var calendario = require('./routes/calendario');
-var inizializza = require('./routes/inizializza');
 var competizioni = require('./routes/competizioni');
 var squadre = require('./routes/squadre');
+var rassegnastampa = require('./routes/rassegnastampa');
 
-var db = require('./models/db');
+//db
+var info=require('./models/info');
+var mongoose=require('mongoose');
+var db = require('./config/db');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-
+var hbs = require('hbs');
+hbs.registerHelper('if_eq', function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
 //sass engine setup
 app.use(
   sass({
@@ -39,13 +54,74 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//passport
+app.use(session({secret: 'lavincentskin',resave: true,saveUninitialized: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+require('./config/passport')(passport);
+
+//handle sessions
+app.use(function(req, res, next) {
+    res.locals.user = req.user; // This is the important line
+    next();
+});
+
+//setup
+app.use(function(req,res,next){
+  if(req.app.locals.NomeLega == undefined){
+    info.findOne({}, function (err, i) {
+      if (err)
+        return console.log(err);
+      if(i){
+        req.app.locals.NomeLega=i.NomeLega;
+        req.app.locals.Stagione=i.Stagione;
+        req.app.locals.Anno=i.Anno;
+        req.app.locals.Aggiornamento=i.Aggiornamento;
+        if(i.Competizione){
+          req.app.locals.Competizione=i.Competizione;
+        }
+        res.redirect(req.originalUrl);
+      }else{
+        i=new info({NomeLega:'Nuova Lega'});
+        i.save();
+        res.redirect(req.originalUrl);
+      }
+    });
+  }else if(req.app.locals.Competizione == undefined){
+    info.findOne({}, function (err, i) {
+      if (err)
+        return console.log(err);
+      if(i.Competizione){
+        req.app.locals.Competizione=i.Competizione;
+        res.redirect(req.originalUrl);
+      }else{
+        next();
+      }
+    });
+  }else{
+    next();
+  }
+});
+
+
+// routes
 app.use('/', routes);
 app.use('/users', users);
+app.use('/config', function(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/');
+}, function(req, res, next) {
+  if (req.user.Role == 'Admin')
+    return next();
+  res.redirect('/');
+}, configroute);
 app.use('/classifica', classifica);
 app.use('/calendario', calendario);
-app.use('/inizializza', inizializza);
 app.use('/competizioni', competizioni);
 app.use('/squadre', squadre);
+app.use('/rassegnastampa', rassegnastampa);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -55,9 +131,7 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
-// development error handler
-// will print stacktrace
+// development error handler: will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -68,8 +142,7 @@ if (app.get('env') === 'development') {
   });
 }
 
-// production error handler
-// no stacktraces leaked to user
+// production error handler: no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
