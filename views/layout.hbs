@@ -2,7 +2,7 @@
 <html>
   <head>
   	<meta charset="UTF-8">
-    <title>{{NomeLega}}</title>
+    <title>{{info.NomeLega}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
@@ -29,7 +29,7 @@
 
 	</div> --}}
   	<header>
-		<a href="/"><h1>{{NomeLega}}</h1></a>
+		<a href="/"><h1>{{info.NomeLega}}</h1></a>
 		{{#if user}}
 		<p>
 		<strong>id</strong>: {{user._id}} <strong>email</strong>: {{user.local.email}}
@@ -69,6 +69,7 @@
 		{{/if}}
 	</ul></nav>
     {{{body}}}
+    {{info.Competizione}}
     <!--<script type="text/javascript" src="javascripts/script.js"></script>-->
   </body>
 </html>

@@ -78,7 +78,7 @@ router.post('/initcompetizioni', function(req,res){
 			if(err)
 				console.log(err)
 			else
-				req.app.locals.Competizione=doc.Competizione;
+				req.app.locals.info=doc;
 				res.redirect('/config');
 		});
 	});
@@ -386,17 +386,12 @@ router.post('/caricadati', function(req, res, next){
 		},arrCompetizioni);
 
 		eval(results.legaData);
-		info={
+		infotoupdate={
 			NomeLega: nomelega,
 			Stagione: stagione,
 			Anno: anno,
 			Aggiornamento: aggiornamento
 		};
-		
-		req.app.locals.NomeLega=info.NomeLega;
-		req.app.locals.Stagione=info.Stagione;
-		req.app.locals.Anno=info.Anno;
-		req.app.locals.Aggiornamento=info.Aggiornamento;
 
 		async.parallel([
 				function(callback){
@@ -466,18 +461,17 @@ router.post('/caricadati', function(req, res, next){
 					mongoose.model('Info').findOne({}, function(err, doc){
 						if(err)
 							throw err;
-						doc.NomeLega=info.NomeLega;
-						doc.Stagione=info.Stagione;
-						doc.Anno=info.Anno;
-						doc.Aggiornamento=info.Aggiornamento;
+						if(doc==null)
+							var doc=new info();
+						doc.NomeLega=infotoupdate.NomeLega;
+						doc.Stagione=infotoupdate.Stagione;
+						doc.Anno=infotoupdate.Anno;
+						doc.Aggiornamento=infotoupdate.Aggiornamento;
 						doc.save(function(err){
 							if(err)
 								console.log(err)
 							else{
-								req.app.locals.NomeLega=doc.NomeLega;
-						        req.app.locals.Stagione=doc.Stagione;
-						        req.app.locals.Anno=doc.Anno;
-						        req.app.locals.Aggiornamento=doc.Aggiornamento;
+								req.app.locals.info=infotoupdate;
 						        callback(null);
 							}
 						});

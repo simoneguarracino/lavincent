@@ -66,37 +66,22 @@ app.use(function(req, res, next) {
     res.locals.user = req.user; // This is the important line
     next();
 });
-
+var isinit=false;
 //setup
 app.use(function(req,res,next){
-  if(req.app.locals.NomeLega == undefined){
+  //if(req.app.locals.NomeLega == undefined){
+  //if(req.app.locals.info == undefined || req.app.locals.info.Competizione==undefined){
+  if(req.app.locals.info == undefined){
     info.findOne({}, function (err, i) {
       if (err)
         return console.log(err);
       if(i){
-        req.app.locals.NomeLega=i.NomeLega;
-        req.app.locals.Stagione=i.Stagione;
-        req.app.locals.Anno=i.Anno;
-        req.app.locals.Aggiornamento=i.Aggiornamento;
-        if(i.Competizione){
-          req.app.locals.Competizione=i.Competizione;
-        }
+        req.app.locals.info=i;
         res.redirect(req.originalUrl);
       }else{
-        i=new info({NomeLega:'Nuova Lega'});
-        i.save();
-        res.redirect(req.originalUrl);
-      }
-    });
-  }else if(req.app.locals.Competizione == undefined){
-    info.findOne({}, function (err, i) {
-      if (err)
-        return console.log(err);
-      if(i.Competizione){
-        req.app.locals.Competizione=i.Competizione;
-        res.redirect(req.originalUrl);
-      }else{
-        next();
+        isinit=true;
+        req.app.locals.info='init';
+        res.redirect('/config');
       }
     });
   }else{
@@ -104,16 +89,19 @@ app.use(function(req,res,next){
   }
 });
 
-
 // routes
 app.use('/', routes);
 app.use('/users', users);
 app.use('/config', function(req, res, next) {
-  if (req.isAuthenticated())
+  if (req.isAuthenticated() || isinit)
     return next();
   res.redirect('/');
 }, function(req, res, next) {
-  if (req.user.Role == 'Admin')
+  if (isinit){
+    console.log('isinit : '+isinit);
+    return next();
+  }
+  else if (req.user.Role == 'Admin')
     return next();
   res.redirect('/');
 }, configroute);

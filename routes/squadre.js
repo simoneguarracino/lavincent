@@ -7,8 +7,10 @@ router.get('/id/:id', function(req,res){
   fantasquadra.findOne({ID:req.params.id},function(err,sqd){
       if(err){
         return console.error(err);
-      } else {
+      } else if(sqd){
         res.redirect('/squadre/'+sqd.Nome);
+      } else{
+        res.redirect('/');
       }
     });
 });

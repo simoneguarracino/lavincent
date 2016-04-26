@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "startdev": "node-dev ./bin/www",
+    "start-dev": "node-dev ./bin/www",
     "start": "node ./bin/www"
   },
   "repository": {
